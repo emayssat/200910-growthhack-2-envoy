@@ -1,0 +1,36 @@
+networks:
+  mesh: {}
+services:
+  backend:
+    build:
+      context: XXX/src/backend
+      dockerfile: Dockerfile
+    image: paasteurizers/backend:v1
+    networks:
+      mesh:
+        aliases:
+        - echo
+    ports:
+    - 8081:8081/tcp
+    volumes:
+    - XXX/src/backend/etc:/opt/spire/conf/agent:rw
+  frontend:
+    build:
+      context: XXX/src/frontend
+      dockerfile: Dockerfile
+    image: paasteurizers/frontend:v1
+    networks:
+      mesh: null
+    ports:
+    - 8080:8080/tcp
+    volumes:
+    - XXX/src/frontend/etc:/opt/spire/conf/agent:rw
+  spire-server:
+    build:
+      context: XXX/src/spire-server
+      dockerfile: Dockerfile
+    image: paasteurizers/spire-server:v1
+    networks:
+      mesh: null
+version: '2.3'
+

@@ -1,0 +1,28 @@
+version: '3'
+services:
+  spire-server:
+    build: ./spire-server
+    hostname: spire-server
+    tty: true
+    privileged: true
+  backend:
+    build: ./backend
+    hostname: echo
+    tty: true
+    privileged: true
+    links:
+      - spire-server
+  frontend:
+    build: ./web
+    hostname: web
+    tty: true
+    privileged: true
+    links:
+      - spire-server
+      - echo
+    netw
+    ports:
+      - 8080:8080
+
+networks:
+  mesh: {}

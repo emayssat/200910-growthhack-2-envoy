@@ -1,0 +1,54 @@
+version: '3'
+services:
+  spire-server:
+    build:
+      context: ./spire-server
+      dockerfile: Dockerfile
+    image: paasteurizers/spire-server:v1
+    # hostname: spire-server
+    # tty: true
+    # privileged: true
+    networks:
+    - mesh
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    image: paasteurizers/backend:v1
+    # hostname: echo
+    # tty: true
+    # privileged: true
+    # links:
+    #   - spire-server
+    networks:
+      mesh:
+        aliases:
+          - echo
+    ports:
+    - 8081:8081
+    volumes:
+    # - ./backend/conf:/opt/spire/conf/agent
+    - ./backend/etc:/opt/spire/conf/agent
+    # - ./backend/bin:/opt/spire/bin
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: paasteurizers/frontend:v1
+    # hostname: web
+    # tty: true
+    # privileged: true
+    # links:
+    #   - spire-server
+    #   - echo
+    networks:
+    - mesh
+    ports:
+    - 8080:8080
+    volumes:
+    # - ./frontend/conf:/opt/spire/conf/agent
+    - ./frontend/etc:/opt/spire/conf/agent
+    # - ./frontend/bin:/opt/spire/bin
+
+networks:
+  mesh: {}
